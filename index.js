@@ -1,63 +1,41 @@
-class Node {
-    constructor(value = "") {
-        this.value = value;
-        this.children = new Map();
-        this.wordCount = 0;
-    }
-}
-
-class Trie {
-    constructor(){
-        this.root = new Node();
-    }
-    insert(word) {
-        var currentNode = this.root;
-
-        for (const c of word) {
-            if (!currentNode.children.has(c)) {
-                currentNode.children.set(c, new Node(currentNode.value + c));
+function solution(n, times) {
+    var count = 0;
+    var arr = times.sort((a,b) => {
+        return a - b;
+    }).map((a) => {
+        return [a,a];
+    })
+    
+    for(var i = 0; i < n; i++) {
+        console.log(arr);
+        var currentNode = arr.shift();
+        count = currentNode[0];
+        currentNode[0] = currentNode[0] + currentNode[1];
+        
+        var leftIndex = 0;
+        var rightIndex = arr.length - 1;
+        var middleIndex = Math.floor(arr.length / 2);
+        
+        while (leftIndex < rightIndex) {
+            if(arr[leftIndex][0] < currentNode[0] && arr[rightIndex][0] > currentNode[0]){
+                console.log(0);
+                arr.splice(rightIndex, currentNode);
+                break;
             }
             
-            currentNode.wordCount += 1;
-            currentNode = currentNode.children.get(c);
-        }
-        currentNode.wordCount += 1;
-    }
-
-    autoSearch(word) {
-        console.log(word);
-        var currentNode = this.root;
-        var count = 0;
-
-        for (const c of word) {
-            console.log(currentNode);
-            count += 1;
-            if (currentNode.value == word) {
-                return count;
+            if(arr[middleIndex][0] < currentNode[0]){
+                console.log(1);
+                leftIndex = middleIndex + 1;
+            } else {
+                console.log(2);
+                rightIndex = middleIndex - 1;                
             }
 
-            currentNode = currentNode.children.get(c);
-            if(currentNode.wordCount == 1){
-                return count;
-            }
+            middleIndex = Math.floor((leftIndex + rightIn dex) / 2);
         }
-        return count;
+        console.log(arr);
     }
-}
-
-function solution(words) {
-    var myTrie = new Trie();
-    words.forEach((word) => {
-        myTrie.insert(word);
-    });
-
-    var count = 0;
-    words.forEach((word) => {
-        count += myTrie.autoSearch(word);
-        console.log(count);
-    });
-
     return count;
 }
 
-console.log(solution(["go","gone","guild"]));
+console.log(solution(6, [2,8,10]));
